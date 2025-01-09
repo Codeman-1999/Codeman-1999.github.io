@@ -1,0 +1,57 @@
+name: Deploy Hexo to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # default branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          # token: ${{ secrets.GITHUB_TOKEN }}
+          # If your repository depends on submodule, please see: https://github.com/actions/checkout
+          submodules: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          # Examples: 20, 18.19, >=16.20.2, lts/Iron, lts/Hydrogen, *, latest, current, node
+          # Ref: https://github.com/actions/setup-node#supported-version-syntax
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Install Hexo Git Deloyer
+        run: |
+          npm install hexo-deployer-git --save
+          npm install hexo-cli -g
+
+      - name: Clean and Generate Staic Files
+        run: |
+          hexo clean
+          hexo generate
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      
+      - name: Deploy to GitHub Pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          cd public
+          git init
+          git add -A
+          git commit -m "Create by workflow"
+          git remote add origin https://${{ secrets.GITHUB_TOKEN }}@github.com/Codeman-1999/Codeman-1999.github.io.git
+          git push origin HEAD:gh-pages -f
+
+
+
+      
