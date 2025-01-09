@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -49,7 +50,7 @@ jobs:
           git init
           git add -A
           git commit -m "Create by workflow"
-          git remote add origin https://${{ secrets.GITHUB_TOKEN }}@github.com/Codeman-1999/Codeman-1999.github.io.git
+          git remote add origin https://${{ secrets.TOKEN }}@github.com/Codeman-1999/Codeman-1999.github.io.git
           git push origin HEAD:gh-pages -f
 
 
